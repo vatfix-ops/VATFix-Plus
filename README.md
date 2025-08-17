@@ -1,72 +1,114 @@
-# 📟 VATFix Plus
+# VATFix Plus — Stay Boring, Stay Online
 
-**Turn downtime into payday.**
-
----
-
-## Why buyers slam that “Buy” button
-
-**VIES dies. Revenue bleeds.** But with VATFix Plus, you don’t just survive — you dominate. Keep your checkout slick, smart, and blazing fast even when the EU's own systems flake out.
-
-* **99.9% uptime** — proxy failover + high-speed cache
-* **Plug‑and‑profit API** — 1 POST and you’re live
-* **Per-key rate limits** — no freeloaders, no abuse
-* **Stripe‑gated access** — gold-tier exclusivity
-* **S3 audit logging** — stay tax-proof, sleep tight
+> A clean, zero-noise VAT number verification API built for compliance-first teams. Lightning fast. Built for engineers, CFOs, and automation addicts.
 
 ---
 
-## Addictive 20‑second integration
-
-**Endpoint**
-`POST https://plus.vatfix.eu/vat/lookup`
-
-**Required headers**
-`x-api-key` • `x-customer-email`
-
-**Live cURL foreplay:**
+## ⚡ Quickstart
 
 ```bash
-curl -sS https://plus.vatfix.eu/vat/lookup \
- -H "Content-Type: application/json" \
- -H "x-api-key: YOUR_API_KEY" \
- -H "x-customer-email: YOUR_EMAIL" \
- -d '{"countryCode":"DE","vatNumber":"12345678912"}' | jq .
+POST https://plus.vatfix.eu/vat/lookup
 ```
 
-**Sample output — sweet, sweet JSON:**
+### Required Headers
+```bash
+-H "x-api-key: <your key>"
+-H "x-customer-email: <billing email>"
+```
 
+### JSON Request Body
 ```json
 {
   "countryCode": "DE",
-  "vatNumber": "12345678912",
-  "valid": true,
-  "name": "MUSTERFIRMA GMBH",
-  "address": "MUSTERSTRASSE 1 \n12345 BERLIN",
-  "requestDate": "2025-08-11T17:05:17.256Z",
-  "lookupId": "DE-12345678912-abcd1234",
-  "source": "vies",
-  "cacheTtlMs": 43200000
+  "vatNumber": "12345678912"
 }
+```
+
+### Example Response
+```json
+{
+  "valid": true,
+  "name": "ACME GmbH",
+  "address": "Berlin, Germany",
+  "timestamp": "2025-08-17T22:00:00Z"
+}
+```
+
+### cURL
+```bash
+curl -sS https://plus.vatfix.eu/vat/lookup \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your_key_here" \
+  -H "x-customer-email: vault@vatfix.eu" \
+  -d '{"countryCode":"DE","vatNumber":"12345678912"}' | jq .
 ```
 
 ---
 
-## Immediate gratification
+## 🧼 Errors
 
-* No more lost checkouts — VATFix catches them all
-* Perfect JSON — plug it straight into your UI
-* `X-Rate-Remaining` — watch usage in real-time
-
----
-
-## Simple pricing
-
-**One plan. One key. One less leak in your funnel.**
+| Code | Meaning |
+|------|---------|
+| 401  | `invalid_key`, `missing_api_key`, `missing_customer_email` |
+| 403  | `access_denied`, `key_revoked`, `plan_not_allowed` |
+| 429  | `rate_limit_exceeded` |
 
 ---
 
-## The clock is ticking
+## 🔒 Rate Limits
+- 120 requests/min per key
 
-📟 VATFix Plus — [https://plus.vatfix.eu](https://plus.vatfix.eu/plus)
-**Live in 60 seconds.** Let your competitors cry over downtime — you’ll be counting conversions.
+Need more? Reach out.
+
+---
+
+## 🧠 Why Use VATFix Plus?
+
+- ✅ Zero-dashboard, API-only simplicity
+- 🔒 Compliance-ready for EU B2B operations
+- 🔁 Easy ERP and finance tool integration
+- 🧑‍💻 Built by VAT automation pros
+- 📧 Human support: [support@vatfix.eu](mailto:support@vatfix.eu)
+- 🔗 Manage billing: [Stripe Portal](https://billing.stripe.com/p/login/14A14o2Kk69F6Ei2hQ5wl00)
+
+---
+
+## 💼 Use Cases
+
+- E-commerce compliance automation
+- B2B invoice & partner validation
+- ERP and internal tool integrations
+- Fraud protection before invoicing
+
+---
+
+## 📦 Plans
+
+| Plan        | Price   | Requests/min | Notes                  |
+|-------------|---------|--------------|-------------------------|
+| FREE        | €0      | 5/min        | 3-day trial             |
+| PLUS        | €99/mo  | 120/min      | Best for scale users    |
+| ENTERPRISE  | Custom  | Custom       | Contact us              |
+
+---
+
+## 🏁 Status
+- ✅ Actively maintained & monitored
+- 🚀 Production-grade
+
+---
+
+## 💬 Tell the Feed
+
+**Stop clicking. Start verifying.**
+
+📍 [https://plus.vatfix.eu/plus](https://plus.vatfix.eu/plus)
+
+---
+
+## 📮 Contact
+- Email: [support@vatfix.eu](mailto:support@vatfix.eu)
+
+---
+
+**Stay boring. Stay online. Pay your VAT.**
