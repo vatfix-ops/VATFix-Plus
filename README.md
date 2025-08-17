@@ -1,4 +1,4 @@
-# VATFix Plus — Stay Boring, Stay Online
+# 📟 VATFix Plus
 
 > A clean, zero-noise VAT number verification API built for compliance-first teams. Lightning fast. Built for engineers, CFOs, and automation addicts.
 
