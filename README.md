@@ -69,7 +69,7 @@ Need more? Reach out.
 - 🔁 Easy ERP and finance tool integration
 - 🧑‍💻 Built by VAT automation pros
 - 📧 Human support: [support@vatfix.eu](mailto:support@vatfix.eu)
-- 🔗 Manage billing: [Stripe Portal]([https://billing.stripe.com/p/login/14A14o2Kk69F6Ei2hQ5wl00](https://checkout.stripe.com/c/pay/cs_live_b1Uvt8MlsKaJU4k8JWI62shf9BhjuRfhhKOL7VsDydundvAI5jMKWqNxph#fidkdWxOYHwnPyd1blppbHNgWjA0V3VXUktJfWlBdWZhNFc0U2hodklCcUZoTXdUQ2prMTxgUHYydlR9aldHQ3BHbmFnV2xEbTR%2FV0NwbnBIRmA0NW9BcnBBSXxDc2JEZjJrQzxGcm5AQlxUNTVoNDJycTB1YicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl))
+- 🔗 Manage billing: [Stripe Portal](https://checkout.stripe.com/c/pay/cs_live_b1Uvt8MlsKaJU4k8JWI62shf9BhjuRfhhKOL7VsDydundvAI5jMKWqNxph#fidkdWxOYHwnPyd1blppbHNgWjA0V3VXUktJfWlBdWZhNFc0U2hodklCcUZoTXdUQ2prMTxgUHYydlR9aldHQ3BHbmFnV2xEbTR%2FV0NwbnBIRmA0NW9BcnBBSXxDc2JEZjJrQzxGcm5AQlxUNTVoNDJycTB1YicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl)
 
 ---
 
