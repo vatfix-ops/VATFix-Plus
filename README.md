@@ -1,5 +1,7 @@
 # 📟 VATFix Plus
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg) ![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg) ![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)
+
 > A clean, zero-noise VAT number verification API built for compliance-first teams. Lightning fast. Built for engineers, CFOs, and automation addicts.
 
 ---
@@ -45,6 +47,53 @@ curl -sS https://plus.vatfix.eu/vat/lookup \
 
 ---
 
+## 🛠 Installation / Auth Setup
+
+```bash
+export VATFIX_KEY=your_api_key
+```
+
+Use this environment variable in your requests to simplify authentication.
+
+---
+
+## 💻 SDK / Client Examples
+
+### Node.js
+```js
+import fetch from "node-fetch";
+
+const res = await fetch("https://plus.vatfix.eu/vat/lookup", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": process.env.VATFIX_KEY,
+    "x-customer-email": "billing@example.com"
+  },
+  body: JSON.stringify({ countryCode: "DE", vatNumber: "12345678912" })
+});
+
+console.log(await res.json());
+```
+
+### Python
+```python
+import requests
+
+url = "https://plus.vatfix.eu/vat/lookup"
+headers = {
+    "Content-Type": "application/json",
+    "x-api-key": "your_api_key",
+    "x-customer-email": "billing@example.com"
+}
+
+data = {"countryCode": "DE", "vatNumber": "12345678912"}
+response = requests.post(url, headers=headers, json=data)
+print(response.json())
+```
+
+---
+
 ## 🧼 Errors
 
 | Code | Meaning |
@@ -62,6 +111,13 @@ Need more? Reach out.
 
 ---
 
+## 📊 Monitoring & Reliability
+- 🔁 Auto-retry on VIES downtime (30–60s backoff)
+- 📦 Cached responses for resilience
+- 🚀 SLA: 99.9% uptime
+
+---
+
 ## 🧠 Why Use VATFix Plus?
 
 - ✅ Zero-dashboard, API-only simplicity
@@ -73,7 +129,7 @@ Need more? Reach out.
 
 ---
 
-## 💼 Use Cases
+## 📼 Use Cases
 
 - E-commerce compliance automation
 - B2B invoice & partner validation
@@ -95,6 +151,12 @@ Need more? Reach out.
 ## 🏁 Status
 - ✅ Actively maintained & monitored
 - 🚀 Production-grade
+
+---
+
+## 📚 Docs
+
+For more details, visit: [vatfix.eu/docs](https://vatfix.eu/docs)
 
 ---
 
