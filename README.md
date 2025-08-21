@@ -154,12 +154,6 @@ Need more? Reach out.
 
 ---
 
-## 📚 Docs
-
-For more details, visit: [vatfix.eu/docs](https://vatfix.eu/docs)
-
----
-
 ## 💬 Tell the Feed
 
 **Stop clicking. Start verifying.**
