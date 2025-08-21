@@ -1,24 +1,29 @@
-# 📟 VATFix Plus
+# 📟 VATFix Plus — EU VAT Validation (VIES Fallback)
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg) ![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg) ![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)
 
-> A clean, zero-noise VAT number verification API built for compliance-first teams. Lightning fast. Built for engineers, CFOs, and automation addicts.
+A clean, zero‑noise VAT number verification API built for compliance‑first teams. Lightning fast. Built for engineers, CFOs, and automation addicts.
 
 ---
 
 ## ⚡ Quickstart
 
-```bash
+**Endpoint**
+
+```
 POST https://plus.vatfix.eu/vat/lookup
 ```
 
-### Required Headers
-```bash
--H "x-api-key: <your key>"
--H "x-customer-email: <billing email>"
+**Required Headers**
+
+```
+x-api-key: <your key>
+x-customer-email: <billing email>
+Content-Type: application/json
 ```
 
-### JSON Request Body
+**Request Body**
+
 ```json
 {
   "countryCode": "DE",
@@ -26,43 +31,54 @@ POST https://plus.vatfix.eu/vat/lookup
 }
 ```
 
-### Example Response
+**Successful (live VIES) Response**
+
 ```json
 {
+  "countryCode": "DE",
+  "vatNumber": "12345678912",
   "valid": true,
   "name": "ACME GmbH",
   "address": "Berlin, Germany",
-  "timestamp": "2025-08-17T22:00:00Z"
+  "requestDate": "2025-08-17T22:00:00Z",
+  "source": "vies",
+  "lookupId": "DE-12345678912-xyz123"
 }
 ```
 
-### cURL
+**Successful (cached) Response**
+
+```json
+{
+  "countryCode": "IT",
+  "vatNumber": "12345678901",
+  "valid": true,
+  "name": "ACME S.p.A.",
+  "address": "Via Esempio 1, 20100 Milano, IT",
+  "requestDate": "2025-08-21T18:14:06Z",
+  "source": "cache",
+  "lookupId": "IT-12345678901-abc123",
+  "cacheTtlMs": 43200000
+}
+```
+
+**cURL**
+
 ```bash
 curl -sS https://plus.vatfix.eu/vat/lookup \
   -H "Content-Type: application/json" \
-  -H "x-api-key: your_key_here" \
-  -H "x-customer-email: vault@vatfix.eu" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "x-customer-email: billing@example.com" \
   -d '{"countryCode":"DE","vatNumber":"12345678912"}' | jq .
 ```
 
 ---
 
-## 🛠 Installation / Auth Setup
+## 💻 Client Examples
 
-```bash
-export VATFIX_KEY=your_api_key
-```
+### Node.js (fetch)
 
-Use this environment variable in your requests to simplify authentication.
-
----
-
-## 💻 SDK / Client Examples
-
-### Node.js
 ```js
-import fetch from "node-fetch";
-
 const res = await fetch("https://plus.vatfix.eu/vat/lookup", {
   method: "POST",
   headers: {
@@ -72,99 +88,74 @@ const res = await fetch("https://plus.vatfix.eu/vat/lookup", {
   },
   body: JSON.stringify({ countryCode: "DE", vatNumber: "12345678912" })
 });
-
 console.log(await res.json());
 ```
 
-### Python
+### Python (requests)
+
 ```python
 import requests
 
 url = "https://plus.vatfix.eu/vat/lookup"
 headers = {
     "Content-Type": "application/json",
-    "x-api-key": "your_api_key",
+    "x-api-key": "YOUR_API_KEY",
     "x-customer-email": "billing@example.com"
 }
-
 data = {"countryCode": "DE", "vatNumber": "12345678912"}
-response = requests.post(url, headers=headers, json=data)
-print(response.json())
+print(requests.post(url, headers=headers, json=data).json())
 ```
 
 ---
 
 ## 🧼 Errors
 
-| Code | Meaning |
-|------|---------|
-| 401  | `invalid_key`, `missing_api_key`, `missing_customer_email` |
-| 403  | `access_denied`, `key_revoked`, `plan_not_allowed` |
-| 429  | `rate_limit_exceeded` |
+| HTTP | Codes                                                          | When                                      |
+| ---: | -------------------------------------------------------------- | ----------------------------------------- |
+|  400 | `missing_vat_data`                                             | Body missing `countryCode` or `vatNumber` |
+|  401 | `invalid_api_key`, `missing_api_key`, `missing_customer_email` | Auth issues                               |
+|  403 | `access_denied`, `key_revoked`, `plan_not_allowed`             | Not entitled / wrong plan                 |
+|  429 | `rate_limit_exceeded`                                          | Per‑key rate limit exceeded               |
+|  500 | `server_error`                                                 | Unexpected error                          |
+
+**Header:** `X-Rate-Remaining` is returned when available.
 
 ---
 
-## 🔒 Rate Limits
-- 120 requests/min per key
+## 🔒 Rate Limits & Fair Use
 
-Need more? Reach out.
-
----
-
-## 📊 Monitoring & Reliability
-- 🔁 Auto-retry on VIES downtime (30–60s backoff)
-- 📦 Cached responses for resilience
-- 🚀 SLA: 99.9% uptime
+* Default **120 requests/min** per key.
+* Burst responsibly; contact support for higher RPS/SLA.
 
 ---
 
-## 🧠 Why Use VATFix Plus?
+## 📊 Reliability
 
-- ✅ Zero-dashboard, API-only simplicity
-- 🔒 Compliance-ready for EU B2B operations
-- 🔁 Easy ERP and finance tool integration
-- 🧑‍💻 Built by VAT automation pros
-- 📧 Human support: [support@vatfix.eu](mailto:support@vatfix.eu)
-- 🔗 Manage billing: [Stripe Portal](https://checkout.stripe.com/c/pay/cs_live_b1Uvt8MlsKaJU4k8JWI62shf9BhjuRfhhKOL7VsDydundvAI5jMKWqNxph#fidkdWxOYHwnPyd1blppbHNgWjA0V3VXUktJfWlBdWZhNFc0U2hodklCcUZoTXdUQ2prMTxgUHYydlR9aldHQ3BHbmFnV2xEbTR%2FV0NwbnBIRmA0NW9BcnBBSXxDc2JEZjJrQzxGcm5AQlxUNTVoNDJycTB1YicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl)
+* Automatic fallback to **cached** entries during VIES downtime
+* S3 cache with TTL
+* Production SLA **99.9%**
 
----
-
-## 📼 Use Cases
-
-- E-commerce compliance automation
-- B2B invoice & partner validation
-- ERP and internal tool integrations
-- Fraud protection before invoicing
+**Status probe:** `GET https://plus.vatfix.eu/status.json` → `{ "status": "ok", "region": "eu-north-1", "host": "fly" }`
 
 ---
 
-## 📦 Plans
+## 🧠 Notes & Best Practices
 
-| Plan        | Price   | Requests/min | Notes                  |
-|-------------|---------|--------------|-------------------------|
-| FREE        | €0      | 5/min        | 3-day trial             |
-| PLUS        | €99/mo  | 120/min      | Best for scale users    |
-| ENTERPRISE  | Custom  | Custom       | Contact us              |
+* **Privacy:** Do **not** put real company PII in examples/logs. Use placeholders like “ACME GmbH”.
+* **Validation:** Send VAT numbers **without spaces or punctuation**.
+* **Idempotency:** Same VAT within TTL may return cached response (`source: "cache"`).
 
 ---
 
-## 🏁 Status
-- ✅ Actively maintained & monitored
-- 🚀 Production-grade
+## 📮 Support
+
+* Email: **[support@vatfix.eu](mailto:support@vatfix.eu)**
+* Billing Portal: available on your success page or portal link in emails
 
 ---
 
-## 💬 Tell the Feed
+## 🔗 Links
 
-**Stop clicking. Start verifying.**
+* Product page: [https://puls.vatfix.eu/plus](https://puls.vatfix.eu/plus)
+* Terms & Privacy: [https://vatfix.eu/legal](https://vatfix.eu/legal)
 
-📍 [https://plus.vatfix.eu/plus](https://plus.vatfix.eu/plus)
-
----
-
-## 📮 Contact
-- Email: [support@vatfix.eu](mailto:support@vatfix.eu)
-
----
-
-**Stay boring. Stay online. Pay your VAT.**
