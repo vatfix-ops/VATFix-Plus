@@ -2,6 +2,8 @@
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg) ![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg) ![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)
 
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/47801394-751f47bb-ee62-475d-a90a-30967b065c12?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D47801394-751f47bb-ee62-475d-a90a-30967b065c12%26entityType%3Dcollection%26workspaceId%3D624016be-ec36-4aa8-85ef-c690efa272bb#?env%5BVATFix%20Plus%20(env)%5D=W3sia2V5IjoiYXBpS2V5IiwidmFsdWUiOiIiLCJ0eXBlIjoiZGVmYXVsdCIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiY3VzdG9tZXJFbWFpbCIsInZhbHVlIjoiIiwidHlwZSI6ImRlZmF1bHQiLCJlbmFibGVkIjp0cnVlfV0=)
+
 A clean, zero‑noise VAT number verification API built for compliance‑first teams. Lightning fast. Built for engineers, CFOs, and automation addicts.
 
 ---
@@ -158,4 +160,3 @@ print(requests.post(url, headers=headers, json=data).json())
 
 * Product page: [https://puls.vatfix.eu/plus](https://puls.vatfix.eu/plus)
 * Terms & Privacy: [https://vatfix.eu/legal](https://vatfix.eu/legal)
-
