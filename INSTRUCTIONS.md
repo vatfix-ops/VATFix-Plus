@@ -1,45 +1,49 @@
-# 📟 VATFix Plus — INSTRUCTIONS.md
+# 📘 VATFix Plus — Internal Instructions
 
-This file is **internal-use only**. Do not include in public README or documentation.
+Private engineering + ops guide. Do **not** ship with customer-facing code or docs.
 
 ---
 
-## 🧱 STACK
+## 🧱 Stack Overview
 
-* **Runtime**: Node.js (ESM modules)
+* **Runtime**: Node.js (ESM)
 * **Server**: Express
 * **Infra**: Fly.io (global edge)
-* **Storage**: S3 (for validation logs)
-* **Billing**: Stripe (Checkout, Webhooks)
-* **Email**: ProtonMail + SimpleLogin SMTP aliases
+* **Storage**: AWS S3 (cache + logs)
+* **Billing**: Stripe (Checkout + Subscriptions)
+* **Email**: ProtonMail / SimpleLogin SMTP aliases
 
 ---
 
-## 🚀 DEPLOYMENT STEPS
+## 🚀 Deployment Steps
 
-1. **Clone repo**
+### 1. Clone Repo
 
 ```bash
 git clone https://github.com/vatfix/vatfix-plus
 cd vatfix-plus
 ```
 
-2. **Set secrets**
+### 2. Prepare Secrets
+
+Use Fly secrets or `.env` for local:
 
 ```bash
-echo STRIPE_SECRET_KEY=sk_live_... >> .env
-echo AWS_ACCESS_KEY_ID=... >> .env
-...
+echo STRIPE_SECRET_KEY=sk_live_xxx >> .env
+echo STRIPE_WEBHOOK_SECRET=whsec_xxx >> .env
+echo AWS_ACCESS_KEY_ID=xxx >> .env
+echo AWS_SECRET_ACCESS_KEY=xxx >> .env
+echo S3_BUCKET=vatfix-plus >> .env
 ```
 
-3. **Install & run local**
+### 3. Local Run
 
 ```bash
 npm install
 node server.mjs
 ```
 
-4. **Deploy to Fly.io**
+### 4. Deploy to Fly.io
 
 ```bash
 fly launch
@@ -48,97 +52,87 @@ fly deploy
 
 ---
 
-## 📬 WEBHOOKS
+## 📬 Stripe Webhooks
 
-Stripe sends checkout + subscription events to:
+* Endpoint: `POST https://plus.vatfix.eu/webhook`
+* Secret: `STRIPE_WEBHOOK_SECRET`
 
-```
-POST https://plus.vatfix.eu/webhook
-```
+**Flow:**
 
-Webhook secret is set as:
-
-```env
-STRIPE_WEBHOOK_SECRET=whsec_...
-```
-
-Event flow:
-
-* Create API key on `checkout.session.completed`
-* Set quota based on `price_id`
-* Track usage + rate limit via `meter.js`
-* Revoke key on cancellation
+* `checkout.session.completed` → provision key in S3 (`keys/{customerId}.json`)
+* `invoice.paid` → extend quota
+* `customer.subscription.deleted` → revoke key
 
 ---
 
-## 🔐 S3 LOGGING
+## 🔐 S3 Logging & Keys
 
-Each VAT lookup writes a log to S3 bucket:
+* **Keys**: `s3://vatfix-plus/keys/{customerId}.json`
+* **Logs**: `s3://vatfix-plus/logs/{lookupId}.json`
 
-```
-/vatfix/{lookupId}.json
-```
-
-IAM user must have PutObject permission.
+IAM policy must allow `s3:GetObject` + `s3:PutObject`.
 
 ---
 
-## 📈 API USAGE
+## 📈 API Usage Flow
 
 Every request:
 
-* Reads rate limits via `meter.js`
-* Logs the request (header + IP + result)
-* Responds with `X-Rate-Remaining` header
+1. `entitlement.js` → assert key & plan
+2. `meter.js` → enforce per-key rate limit
+3. `validate.js` → perform VAT check (VIES → fallback → cache)
+4. Log result to S3
+5. Return with `X-Rate-Remaining`
 
 ---
 
-## 📡 STRIPE SETUP
+## 📡 Stripe Setup
 
-Create products & pricing in Stripe Dashboard.
-Example:
+Create products + prices in Stripe Dashboard. Example:
 
-* **Plus Plan** → `price_1NX...`
+* `VATFix Plus` → `price_12345`
 
-These IDs are passed into:
+Then set in env:
 
 ```env
-VATFIX_PRICE_IDS=price_1NXABC123,price_1NXDEF456
+VATFIX_PRICE_IDS=price_12345
 ```
 
-Only buyers with active Stripe subscription can use the API.
-
 ---
 
-## 📤 SMTP SETUP
+## 📤 SMTP Setup
 
-Used for recovery + alerts.
-Set up SimpleLogin SMTP alias:
+For password resets / alerts.
 
 ```env
-MAIL_FROM=vault@vatfix.eu
-SMTP_USER='vault@vatfix.eu'
-SMTP_PASS='password'
+MAIL_FROM=alerts@vatfix.eu
+SMTP_USER=alerts@vatfix.eu
+SMTP_PASS=xxxxxx
 SMTP_HOST=smtp.simplelogin.io
 SMTP_PORT=587
 ```
 
 ---
 
-## 🧪 TEST URLS
+## 🧪 Test URLs
 
-* [x] Live test: `https://plus.vatfix.eu/vat/lookup`
-* [x] Billing page: `https://plus.vatfix.eu/buy`
-* [x] Docs: `https://plus.vatfix.eu/plus`
+* VAT Lookup: `https://plus.vatfix.eu/vat/lookup`
+* Key Reset: `https://plus.vatfix.eu/reset`
+* Test Issue: `https://plus.vatfix.eu/test/issue`
+* Status: `https://plus.vatfix.eu/status.json`
+* Docs: `https://plus.vatfix.eu/plus`
 
 ---
 
-## ✅ FINAL CHECK
+## ✅ Pre-Release Checklist
 
-* [ ] Stripe webhook responds 200 OK
-* [ ] Lookup returns correct data
-* [ ] S3 logs appear with lookupId
-* [ ] Rate limits enforce per key
-* [ ] No `.env` or `.log` in repo
+* [ ] `fly deploy` works, app responds 200 OK
+* [ ] Stripe webhook returns 200 OK
+* [ ] Test key issue + reset work with issuer secret
+* [ ] S3 logs written on lookup
+* [ ] Rate limits enforced per key
+* [ ] No secrets or `.env` in repo
 
-Stay boring. Stay profitable.
+---
+
+Stay boring. Stay profitable. 🚀

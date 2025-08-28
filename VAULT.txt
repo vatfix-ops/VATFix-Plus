@@ -1,25 +1,25 @@
- # 🔐 VATFix VAULT
+# 🔐 VATFix VAULT
 
-**Internal mechanics, trade secrets & integration tips for the elite. DO NOT PUBLICIZE.**
+Internal mechanics, trade secrets & integration tips for the elite. **DO NOT PUBLICIZE.**
 
 ---
 
 ## 🔑 API Keys & Billing
 
-* **API keys** are minted post-purchase via Stripe.
+* API keys are minted post-purchase via Stripe.
 * Each key is bound to a `customer_email`.
 * Headers `x-api-key` and `x-customer-email` are **mandatory**.
-* Rate limits: **120 requests/min** per key. Spikes over limit = 429 response.
+* Rate limits: **120 requests/min** per key. Spikes over limit → `429 rate_limit_exceeded`.
 
 ---
 
 ## 🧠 Cache & Fallback
 
-* **Redis + S3 combo**:
+* **S3-backed cache + logs**:
 
-  * Fast responses from in-memory Redis (TTL: 12h).
-  * Long-term logging in S3 bucket `vatfix-plus-logs`.
-* All successful lookups are cached by `countryCode` + `vatNumber`.
+  * 12h cache window per VAT number.
+  * Long-term audit logging in S3 bucket `vatfix-plus`.
+* All successful lookups cached by `countryCode + vatNumber`.
 
 ---
 
@@ -27,30 +27,30 @@
 
 * If VIES API is down:
 
-  * Retry 3x across EU mirrors.
-  * On full failure: serve stale cache if <12h old.
-  * Else: return `valid: null` with error code `vies_unavailable`.
+  * Retry 3× across EU mirrors.
+  * On total failure: serve stale cache if <12h old.
+  * Else: return `{ valid: null, error: "vies_unavailable" }`.
 
 ---
 
 ## 🧩 Code Structure
 
 * `server.mjs` – Express server
-* `validate.js` – Core VAT validation engine
+* `lib/validate.js` – VAT validation engine
 * `webhook.js` – Stripe billing sync & revocation
-* `meter.js` – Per-key throttling & quota
-* `entitlement.js` – Plan detection & access rules
-* `success.js` – Post-checkout handling
+* `lib/meter.js` – Per-key throttling & quota
+* `lib/entitlement.js` – Plan detection & access rules
+* `lib/success.js` – Post-checkout handling
 
 ---
 
 ## 📦 Deployments
 
-**Hosted on:** Fly.io
+**Platform:** Fly.io
 
-* Auto-scale across EU edge regions
-* `fly.toml` handles regions, resources, env vars
-* Logs piped to `logs.vatfix.eu` via Loki/Grafana
+* Auto-scale across EU edge regions.
+* `fly.toml` defines regions, resources, env vars.
+* Logs visible in `fly logs` (optionally export to S3 for retention).
 
 ---
 
@@ -59,40 +59,40 @@
 ### 1. Valid EU VAT
 
 ```json
-{"countryCode":"DE", "vatNumber":"123456789"}
+{"countryCode": "DE", "vatNumber": "123456789"}
 ```
 
-Should return `valid: true` with name/address.
+Expected → `valid: true` with name/address.
 
 ### 2. Invalid VAT
 
 ```json
-{"countryCode":"FR", "vatNumber":"FAKE000000"}
+{"countryCode": "FR", "vatNumber": "FAKE000000"}
 ```
 
-Should return `valid: false`.
+Expected → `valid: false`.
 
 ### 3. Rate Limit
 
-Flood single key > 120 RPM — expect HTTP 429.
+Flood a single key >120 RPM → expect `429`.
 
 ### 4. Missing headers
 
-Omit `x-api-key` — expect HTTP 401.
+Omit `x-api-key` → expect `401`.
 
 ---
 
 ## 🤫 Secrets
 
-* Stripe secret: `STRIPE_SECRET` in Fly env
-* Webhook secret: `STRIPE_WEBHOOK_SECRET`
-* Vault secrets for Redis/S3/API proxy tokens set in `.env` (not committed)
+* Stripe secret → `STRIPE_SECRET_KEY` in Fly secrets
+* Webhook secret → `STRIPE_WEBHOOK_SECRET`
+* S3 access keys + bucket in `.env` (**never committed**)
 
 ---
 
 ## 🧭 Internal Docs
 
-* See `INSTRUCTIONS.md` for deployment
-* GitHub readme is customer-facing — keep this vault internal
+* See `INSTRUCTIONS.md` for deployment.
+* Public GitHub `README.md` is customer-facing — **keep VAULT private.**
 
 Stay secret. Stay sovereign. 🛡️
