@@ -1,0 +1,45 @@
+{
+  "id": "a9472c2f-3d3f-4b1b-92a2-d4c2b53a1f10",
+  "name": "VATFix Plus (Public Env)",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "https://plus.vatfix.eu",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "issuerSecret",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "apiKey",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "customerEmail",
+      "value": "integration-testing@zapier.com",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "countryCode",
+      "value": "DE",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "vatNumber",
+      "value": "12345678912",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-08-28T00:00:00.000Z",
+  "_postman_exported_using": "Postman/10"
+}

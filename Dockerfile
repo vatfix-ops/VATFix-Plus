@@ -1,40 +1,32 @@
-# Dockerfile — VATFix Plus (TLS-clean, tini, conditional npm install)
+# Dockerfile — VATFix Plus (Node.js + Tini, TLS ready)
+
+# Use official lightweight Node.js LTS base
 FROM node:20-slim
 
-# System deps for TLS + time + init
-RUN apt-get update \
- && apt-get install -y --no-install-recommends ca-certificates tzdata tini \
- && rm -rf /var/lib/apt/lists/*
+# Install tini for proper signal handling (zombie reaping)
+RUN apt-get update && apt-get install -y --no-install-recommends tini \
+  && rm -rf /var/lib/apt/lists/*
 
-ENV TZ=Europe/Rome \
-    NODE_ENV=production \
-    # Crash fast on unhandled promises so Fly restarts instead of wedging
-    NODE_OPTIONS=--unhandled-rejections=strict
-
+# Set working directory
 WORKDIR /app
 
-# Install deps first for layer cache. Support both with/without lockfile.
-COPY package.json package-lock.json* ./
-RUN if [ -f package-lock.json ]; then \
-      npm ci --omit=dev --no-audit --no-fund; \
-    else \
-      npm i --omit=dev --no-audit --no-fund; \
-    fi \
- && npm cache clean --force
+# Copy package manifests first (better caching)
+COPY package*.json ./
 
-# Copy source
-COPY server.mjs ./server.mjs
-COPY webhook.js ./webhook.js
-COPY lib ./lib
+# Install deps
+RUN npm ci --omit=dev
 
-# Drop privileges
-RUN useradd -m -u 10001 appuser \
- && chown -R appuser:appuser /app
-USER appuser
+# Copy all source
+COPY . .
 
+# Expose app port
 EXPOSE 3000
 
-# Use tini as PID1 for clean signals in Fly
-ENTRYPOINT ["/usr/bin/tini","--"]
+# Ensure NODE_ENV production
+ENV NODE_ENV=production
 
-CMD ["node","server.mjs"]
+# Use tini as entrypoint to fix zombie processes
+ENTRYPOINT ["/usr/bin/tini", "-s", "--"]
+
+# Start server
+CMD ["node", "server.mjs"]

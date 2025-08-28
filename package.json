@@ -1,8 +1,8 @@
 {
-  "name": "vatfix-proxy",
+  "name": "vatfix-plus",
   "version": "1.0.0",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "main": "server.mjs",
   "scripts": {
@@ -13,7 +13,6 @@
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "nodemailer": "^7.0.5",
-    "soap": "^0.43.0",
     "stripe": "^12.18.0"
   },
   "engines": {

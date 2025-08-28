@@ -1,4 +1,4 @@
-# 🔐 VATFix VAULT
+ # 🔐 VATFix VAULT
 
 **Internal mechanics, trade secrets & integration tips for the elite. DO NOT PUBLICIZE.**
 

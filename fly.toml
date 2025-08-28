@@ -1,0 +1,42 @@
+# fly.toml — VATFix Plus (Machines, TLS1.2+, steady health)
+app = "vatfix-proxy"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = false
+  min_machines_running = 1
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 250
+
+  [[http_service.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[http_service.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [http_service.tls_options]
+    min_version = "TLS1.2"
+
+  [[http_service.checks]]
+    interval = "10s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/status"
+    timeout = "2s"
+
+[vm]
+  cpu_kind = "shared"
+  cpus = 1
+  memory = "512mb"
