@@ -2,21 +2,7 @@
 
 ![Version](https://img.shields.io/badge/version-1.0.2-blue.svg) ![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg) ![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)
 
-<div class="postman-run-button"
-data-postman-action="collection/fork"
-data-postman-visibility="public"
-data-postman-var-1="47801394-da418de9-75da-43f0-b156-12a84b9fd1b5"
-data-postman-collection-url="entityId=47801394-da418de9-75da-43f0-b156-12a84b9fd1b5&entityType=collection&workspaceId=624016be-ec36-4aa8-85ef-c690efa272bb"
-data-postman-param="env%5BVATFix%20Plus%20(Public%20Env)%5D=W3sia2V5IjoiYmFzZVVybCIsInZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsInNlc3Npb25JbmRleCI6MH0seyJrZXkiOiJpc3N1ZXJTZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiIiwiY29tcGxldGVTZXNzaW9uVmFsdWUiOiIiLCJzZXNzaW9uSW5kZXgiOjF9LHsia2V5IjoiYXBpS2V5IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlLCJ0eXBlIjoiZGVmYXVsdCIsInNlc3Npb25WYWx1ZSI6IiIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiIiwic2Vzc2lvbkluZGV4IjoyfSx7ImtleSI6ImN1c3RvbWVyRW1haWwiLCJ2YWx1ZSI6ImludGVncmF0aW9uLXRlc3RpbmdAemFwaWVyLmNvbSIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiaW50ZWdyYXRpb24tdGVzdGluZ0B6YXBpZXIuY29tIiwiY29tcGxldGVTZXNzaW9uVmFsdWUiOiJpbnRlZ3JhdGlvbi10ZXN0aW5nQHphcGllci5jb20iLCJzZXNzaW9uSW5kZXgiOjN9LHsia2V5IjoiY291bnRyeUNvZGUiLCJ2YWx1ZSI6IkRFIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6ImRlZmF1bHQiLCJzZXNzaW9uVmFsdWUiOiJERSIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiREUiLCJzZXNzaW9uSW5kZXgiOjR9LHsia2V5IjoidmF0TnVtYmVyIiwidmFsdWUiOiIxMjM0NTY3ODkxMiIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiMTIzNDU2Nzg5MTIiLCJjb21wbGV0ZVNlc3Npb25WYWx1ZSI6IjEyMzQ1Njc4OTEyIiwic2Vzc2lvbkluZGV4Ijo1fV0="></div>
-<script type="text/javascript">
-  (function (p,o,s,t,m,a,n) {
-    !p[s] && (p[s] = function () { (p[t] || (p[t] = [])).push(arguments); });
-    !o.getElementById(s+t) && o.getElementsByTagName("head")[0].appendChild((
-      (n = o.createElement("script")),
-      (n.id = s+t), (n.async = 1), (n.src = m), n
-    ));
-  }(window, document, "_pm", "PostmanRunObject", "https://run.pstmn.io/button.js"));
-</script>
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/47801394-da418de9-75da-43f0-b156-12a84b9fd1b5?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D47801394-da418de9-75da-43f0-b156-12a84b9fd1b5%26entityType%3Dcollection%26workspaceId%3D624016be-ec36-4aa8-85ef-c690efa272bb#?env%5BVATFix%20Plus%20(Public%20Env)%5D=W3sia2V5IjoiYmFzZVVybCIsInZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsInNlc3Npb25JbmRleCI6MH0seyJrZXkiOiJpc3N1ZXJTZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiIiwiY29tcGxldGVTZXNzaW9uVmFsdWUiOiIiLCJzZXNzaW9uSW5kZXgiOjF9LHsia2V5IjoiYXBpS2V5IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlLCJ0eXBlIjoiZGVmYXVsdCIsInNlc3Npb25WYWx1ZSI6IiIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiIiwic2Vzc2lvbkluZGV4IjoyfSx7ImtleSI6ImN1c3RvbWVyRW1haWwiLCJ2YWx1ZSI6ImludGVncmF0aW9uLXRlc3RpbmdAemFwaWVyLmNvbSIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiaW50ZWdyYXRpb24tdGVzdGluZ0B6YXBpZXIuY29tIiwiY29tcGxldGVTZXNzaW9uVmFsdWUiOiJpbnRlZ3JhdGlvbi10ZXN0aW5nQHphcGllci5jb20iLCJzZXNzaW9uSW5kZXgiOjN9LHsia2V5IjoiY291bnRyeUNvZGUiLCJ2YWx1ZSI6IkRFIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6ImRlZmF1bHQiLCJzZXNzaW9uVmFsdWUiOiJERSIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiREUiLCJzZXNzaW9uSW5kZXgiOjR9LHsia2V5IjoidmF0TnVtYmVyIiwidmFsdWUiOiIxMjM0NTY3ODkxMiIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiMTIzNDU2Nzg5MTIiLCJjb21wbGV0ZVNlc3Npb25WYWx1ZSI6IjEyMzQ1Njc4OTEyIiwic2Vzc2lvbkluZGV4Ijo1fV0=)
 
 A clean, zero‑noise VAT number verification API built for compliance‑first teams. Lightning fast. Built for engineers, CFOs, and automation addicts.
 
