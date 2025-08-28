@@ -11,11 +11,11 @@
       "script": {
         "type": "text/javascript",
         "exec": [
-          "// Sensible defaults for public use",
+          "// Public-safe defaults",
           "if (!pm.collectionVariables.get('baseUrl')) pm.collectionVariables.set('baseUrl', 'https://plus.vatfix.eu');",
           "if (!pm.collectionVariables.get('customerEmail')) pm.collectionVariables.set('customerEmail', 'developer@example.com');",
           "if (!pm.collectionVariables.get('countryCode')) pm.collectionVariables.set('countryCode', 'DE');",
-          "if (!pm.collectionVariables.get('vatNumber')) pm.collectionVariables.set('vatNumber', '123456789');"
+          "if (!pm.collectionVariables.get('vatNumber')) pm.collectionVariables.set('vatNumber', '12345678901');"
         ]
       }
     }
@@ -25,7 +25,7 @@
     { "key": "apiKey", "value": "", "type": "string" },
     { "key": "customerEmail", "value": "developer@example.com", "type": "string" },
     { "key": "countryCode", "value": "DE", "type": "string" },
-    { "key": "vatNumber", "value": "123456789", "type": "string" },
+    { "key": "vatNumber", "value": "12345678901", "type": "string" },
     { "key": "issuerSecret", "value": "", "type": "string" }
   ],
   "item": [
@@ -46,11 +46,7 @@
               "mode": "raw",
               "raw": "{\n  \"countryCode\": \"{{countryCode}}\",\n  \"vatNumber\": \"{{vatNumber}}\"\n}"
             },
-            "url": {
-              "raw": "{{baseUrl}}/vat/lookup",
-              "host": ["{{baseUrl}}"],
-              "path": ["vat", "lookup"]
-            },
+            "url": { "raw": "{{baseUrl}}/vat/lookup", "host": ["{{baseUrl}}"], "path": ["vat", "lookup"] },
             "description": "Validate a VAT ID. Returns VIES or cached result. Requires x-api-key + x-customer-email."
           },
           "response": [
@@ -60,7 +56,7 @@
               "status": "OK",
               "_postman_previewlanguage": "json",
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"countryCode\": \"DE\",\n  \"vatNumber\": \"123456789\",\n  \"valid\": true,\n  \"name\": \"ACME GmbH\",\n  \"address\": \"Berlin, Germany\",\n  \"requestDate\": \"2025-08-27+02:00\",\n  \"source\": \"vies\"\n}"
+              "body": "{\n  \"countryCode\": \"DE\",\n  \"vatNumber\": \"12345678901\",\n  \"valid\": true,\n  \"name\": \"ACME GmbH\",\n  \"address\": \"Berlin, Germany\",\n  \"requestDate\": \"2025-08-27+02:00\",\n  \"source\": \"vies\"\n}"
             },
             {
               "name": "200 OK — Invalid (example)",
@@ -68,36 +64,12 @@
               "status": "OK",
               "_postman_previewlanguage": "json",
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"countryCode\": \"DE\",\n  \"vatNumber\": \"123456789\",\n  \"valid\": false,\n  \"name\": \"\",\n  \"address\": \"\",\n  \"requestDate\": \"2025-08-27+02:00\",\n  \"source\": \"vies\"\n}"
+              "body": "{\n  \"countryCode\": \"DE\",\n  \"vatNumber\": \"12345678901\",\n  \"valid\": false,\n  \"name\": \"\",\n  \"address\": \"\",\n  \"requestDate\": \"2025-08-27+02:00\",\n  \"source\": \"vies\"\n}"
             },
-            {
-              "name": "401 — invalid_api_key",
-              "code": 401,
-              "status": "Unauthorized",
-              "_postman_previewlanguage": "json",
-              "body": "{\n  \"error\": \"invalid_api_key\"\n}"
-            },
-            {
-              "name": "401 — missing_customer_email",
-              "code": 401,
-              "status": "Unauthorized",
-              "_postman_previewlanguage": "json",
-              "body": "{\n  \"error\": \"missing_customer_email\"\n}"
-            },
-            {
-              "name": "403 — access_denied",
-              "code": 403,
-              "status": "Forbidden",
-              "_postman_previewlanguage": "json",
-              "body": "{\n  \"error\": \"access_denied\"\n}"
-            },
-            {
-              "name": "429 — rate_limit_exceeded",
-              "code": 429,
-              "status": "Too Many Requests",
-              "_postman_previewlanguage": "json",
-              "body": "{\n  \"error\": \"rate_limit_exceeded\"\n}"
-            }
+            { "name": "401 — invalid_api_key", "code": 401, "status": "Unauthorized", "_postman_previewlanguage": "json", "body": "{\n  \"error\": \"invalid_api_key\"\n}" },
+            { "name": "401 — missing_customer_email", "code": 401, "status": "Unauthorized", "_postman_previewlanguage": "json", "body": "{\n  \"error\": \"missing_customer_email\"\n}" },
+            { "name": "403 — access_denied", "code": 403, "status": "Forbidden", "_postman_previewlanguage": "json", "body": "{\n  \"error\": \"access_denied\"\n}" },
+            { "name": "429 — rate_limit_exceeded", "code": 429, "status": "Too Many Requests", "_postman_previewlanguage": "json", "body": "{\n  \"error\": \"rate_limit_exceeded\"\n}" }
           ],
           "event": [
             {
@@ -124,11 +96,7 @@
               { "key": "x-api-key", "value": "{{apiKey}}", "type": "text" },
               { "key": "x-customer-email", "value": "{{customerEmail}}", "type": "text" }
             ],
-            "url": {
-              "raw": "{{baseUrl}}/reset",
-              "host": ["{{baseUrl}}"],
-              "path": ["reset"]
-            },
+            "url": { "raw": "{{baseUrl}}/reset", "host": ["{{baseUrl}}"], "path": ["reset"] },
             "description": "Rotate your customer key instantly; old key is revoked. No Authorization bearer header needed."
           },
           "response": [],
@@ -140,15 +108,8 @@
                 "exec": [
                   "pm.test('HTTP 200', () => pm.expect(pm.response.code).to.eql(200));",
                   "const json = pm.response.json();",
-                  "pm.test('Rotated true + new apiKey', () => {",
-                  "  pm.expect(json).to.have.property('apiKey');",
-                  "  pm.expect(json.rotated).to.eql(true);",
-                  "});",
-                  "if (json.apiKey) {",
-                  "  pm.collectionVariables.set('apiKey', json.apiKey);",
-                  "  pm.environment.set('apiKey', json.apiKey);",
-                  "  console.log('Saved rotated apiKey (customer)');",
-                  "}"
+                  "pm.test('Rotated true + new apiKey', () => { pm.expect(json).to.have.property('apiKey'); pm.expect(json.rotated).to.eql(true); });",
+                  "if (json.apiKey) { pm.collectionVariables.set('apiKey', json.apiKey); pm.environment.set('apiKey', json.apiKey); console.log('Saved rotated apiKey (customer)'); }"
                 ]
               }
             }
@@ -158,7 +119,7 @@
     },
     {
       "name": "Reviewer-only (ignore if you are a customer)",
-      "description": "Endpoints used by platform reviewers. Require Authorization: Bearer {{issuerSecret}}.",
+      "description": "Platform reviewers only. Require Authorization: Bearer {{issuerSecret}}.",
       "item": [
         {
           "name": "1) Issue Test Key (integration)",
@@ -168,15 +129,8 @@
               { "key": "Authorization", "value": "Bearer {{issuerSecret}}", "type": "text" },
               { "key": "Content-Type", "value": "application/json" }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"label\": \"Reviewer Key\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/test/issue",
-              "host": ["{{baseUrl}}"],
-              "path": ["test", "issue"]
-            },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"label\": \"Reviewer Key\"\n}" },
+            "url": { "raw": "{{baseUrl}}/test/issue", "host": ["{{baseUrl}}"], "path": ["test", "issue"] },
             "description": "Issues a reviewer integration key (not billed)."
           },
           "response": [],
@@ -189,11 +143,7 @@
                   "pm.test('201/200 Created', () => pm.expect([200,201]).to.include(pm.response.code));",
                   "const json = pm.response.json();",
                   "pm.test('Includes apiKey', () => pm.expect(json).to.have.property('apiKey'));",
-                  "if (json.apiKey) {",
-                  "  pm.collectionVariables.set('apiKey', json.apiKey);",
-                  "  pm.environment.set('apiKey', json.apiKey);",
-                  "  console.log('Saved apiKey (reviewer)');",
-                  "}"
+                  "if (json.apiKey) { pm.collectionVariables.set('apiKey', json.apiKey); pm.environment.set('apiKey', json.apiKey); console.log('Saved apiKey (reviewer)'); }"
                 ]
               }
             }
@@ -209,11 +159,7 @@
               { "key": "x-api-key", "value": "{{apiKey}}", "type": "text" },
               { "key": "x-customer-email", "value": "{{customerEmail}}", "type": "text" }
             ],
-            "url": {
-              "raw": "{{baseUrl}}/reset",
-              "host": ["{{baseUrl}}"],
-              "path": ["reset"]
-            },
+            "url": { "raw": "{{baseUrl}}/reset", "host": ["{{baseUrl}}"], "path": ["reset"] },
             "description": "Rotate a reviewer integration key. Requires bearer token."
           },
           "response": [],
@@ -225,15 +171,8 @@
                 "exec": [
                   "pm.test('HTTP 200', () => pm.expect(pm.response.code).to.eql(200));",
                   "const json = pm.response.json();",
-                  "pm.test('Rotated + new apiKey', () => {",
-                  "  pm.expect(json).to.have.property('apiKey');",
-                  "  pm.expect(json.rotated).to.eql(true);",
-                  "});",
-                  "if (json.apiKey) {",
-                  "  pm.collectionVariables.set('apiKey', json.apiKey);",
-                  "  pm.environment.set('apiKey', json.apiKey);",
-                  "  console.log('Saved rotated apiKey (reviewer)');",
-                  "}"
+                  "pm.test('Rotated + new apiKey', () => { pm.expect(json).to.have.property('apiKey'); pm.expect(json.rotated).to.eql(true); });",
+                  "if (json.apiKey) { pm.collectionVariables.set('apiKey', json.apiKey); pm.environment.set('apiKey', json.apiKey); console.log('Saved rotated apiKey (reviewer)'); }"
                 ]
               }
             }
@@ -246,26 +185,15 @@
       "item": [
         {
           "name": "Status JSON",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/status.json", "host": ["{{baseUrl}}"], "path": ["status.json"] },
-            "description": "Simple health probe."
-          },
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/status.json", "host": ["{{baseUrl}}"], "path": ["status.json"] }, "description": "Simple health probe." },
           "response": []
         },
         {
           "name": "Marketing / Docs",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] },
-            "description": "Marketing homepage & Quickstart."
-          },
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] }, "description": "Marketing homepage & Quickstart." },
           "response": []
         }
       ]
     }
   ]
 }
-  
