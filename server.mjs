@@ -1,6 +1,6 @@
-// server.mjs — 📟 VATFix Plus (with secure test key issuer)
+// server.mjs — 📟 VATFix Plus (secure reviewer flow + optional customer-mode test keys)
 // Hosts docs, pricing, checkout, success page, webhook, /vat/* API, /reset, /homepage
-// Adds /test/issue for integration reviewers (Zapier, etc.) with issuer-only auth.
+// /test/issue now accepts { mode: "integration" | "customer" } for Zapier reviewers.
 
 import crypto from 'crypto';
 import express from 'express';
@@ -26,12 +26,16 @@ const {
   CHECKOUT_PRICE_ID,                 // fallback price if lookup_keys not present
   CHECKOUT_SUCCESS_PATH = '/success',
   CHECKOUT_CANCEL_PATH = '/cancel',
-
   TRIAL_DAYS = '',                   // optional free trial days
 
   // 🔐 Issuer for integration/reviewer keys
-  TEST_ISSUER_SECRET = '',           // required to call /test/issue and rotate integration keys
+  TEST_ISSUER_SECRET = '',
   ZAPIER_TEST_EMAIL = 'integration-testing@zapier.com',
+
+  // 🧾 Footer (kept non-personal by default)
+  FOOTER_OWNER = 'VATFix Plus',
+  FOOTER_EMAIL = 'support@vatfix.eu',
+  FOOTER_LEGAL_URL = '/legal',
 } = process.env;
 
 if (!STRIPE_SECRET_KEY) throw new Error('Missing STRIPE_SECRET_KEY');
@@ -52,6 +56,7 @@ app.use((req, res, next) => {
   res.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   res.set('X-Content-Type-Options', 'nosniff');
   res.set('Referrer-Policy', 'no-referrer');
+  // Success page can be cached by the browser session while visible; others no-cache
   if (!req.path.startsWith('/success')) {
     res.set('Cache-Control', 'no-cache');
   }
@@ -65,7 +70,7 @@ app.use(express.json({ limit: '1mb' }));
 const endpoint = 'https://plus.vatfix.eu/vat/lookup';
 const portal = 'https://billing.stripe.com/p/login/14A14o2Kk69F6Ei2hQ5wI00';
 
-// ---------- Tiny S3 JSON helpers (safe) ----------
+// ---------- Tiny S3 JSON helpers ----------
 async function s3GetJson(Key) {
   try {
     const out = await s3.send(new GetObjectCommand({ Bucket: S3_BUCKET, Key }));
@@ -95,9 +100,7 @@ async function s3PutJson(Key, data) {
 // ---------- Footer ----------
 function renderFooter() {
   return h`<footer style="margin-top:40px;font-size:13px;color:#555">
-  © 📟 VATFix Plus — Operated by KIASAT MIDIA, P.IVA IT12741660968<br>
-  Largo dei Gelsomini 12, 20146 Milano (MI), Italia<br>
-  <a href="/legal">Legal</a> • <a href="mailto:legal@sl.vatfix.eu">legal@sl.vatfix.eu</a>
+  © ${FOOTER_OWNER} • <a href="${FOOTER_LEGAL_URL}">Legal</a> • <a href="mailto:${FOOTER_EMAIL}">${FOOTER_EMAIL}</a>
 </footer>`;
 }
 
@@ -125,12 +128,12 @@ function renderPlusPage() {
 <p><span class="pill">Reset</span><br>Rotate your key any time with <code>POST /reset</code> (see docs below).</p>
 <p><span class="pill">Limits</span><br>Default <code>120</code> requests/min per key.</p>
 <p><span class="pill">Errors</span></p>
-<pre>401 invalid_key | 401 missing_api_key | 401 missing_customer_email
+<pre>401 invalid_api_key | 401 missing_api_key | 401 missing_customer_email
 403 access_denied | 403 key_revoked | 403 plan_not_allowed
 429 rate_limit_exceeded</pre>
 <p><span class="pill">Billing & support</span><br>
   Manage subscription: <a href="${portal}">${portal}</a><br>
-  Email: <a href="mailto:support@vatfix.eu">support@vatfix.eu</a></p>
+  Email: <a href="mailto:${FOOTER_EMAIL}">${FOOTER_EMAIL}</a></p>
 <p>Stay boring, stay online.</p>
 ${renderFooter()}`;
 }
@@ -179,7 +182,7 @@ function renderFAQPage() {
 <h3>How does caching work?</h3>
 <p>Each VAT number response is cached in S3 for 12 hours. On VIES outage we serve the cached entry and set <code>source: "cache"</code>.</p>
 <h3>What are the errors?</h3>
-<p>401 <code>invalid_key</code>, 401 <code>missing_* </code>, 403 <code>access_denied</code>, 403 <code>plan_not_allowed</code>, 429 <code>rate_limit_exceeded</code>.</p>
+<p>401 <code>invalid_api_key</code>, 401 <code>missing_* </code>, 403 <code>access_denied</code>, 403 <code>plan_not_allowed</code>, 429 <code>rate_limit_exceeded</code>.</p>
 ${renderFooter()}`;
 }
 
@@ -249,7 +252,7 @@ function renderHomePage() {
 <div class="card">
   <h2>Docs & Billing</h2>
   <p><a href="/plus">Quickstart</a> • <a href="/faq">FAQ</a> • <a href="/pricing">Pricing</a> • <a href="/legal">Legal</a></p>
-  <p>Manage subscription: <a href="${portal}">Stripe Portal</a> • Email: <a href="mailto:support@vatfix.eu">support@vatfix.eu</a></p>
+  <p>Manage subscription: <a href="${portal}">Stripe Portal</a> • Email: <a href="mailto:${FOOTER_EMAIL}">${FOOTER_EMAIL}</a></p>
 </div>
 
 ${renderFooter()}`;
@@ -285,7 +288,7 @@ x-api-key: ${key}</pre>
  -d '{"countryCode":"DE","vatNumber":"12345678912"}' | jq .</pre>
 <p><a class="btn" href="${portalUrl}" target="_blank" rel="noopener">Manage billing</a></p>
 <p class="muted">Keep this safe. It won't be shown again here. An email was also sent to ${email}.</p>
-<p class="muted">Need help? <a href="mailto:support@vatfix.eu">support@vatfix.eu</a></p>
+<p class="muted">Need help? <a href="mailto:${FOOTER_EMAIL}">${FOOTER_EMAIL}</a></p>
 ${renderFooter()}`;
 }
 
@@ -300,10 +303,18 @@ async function vatHandler(req, res) {
     if (!emailHeader) return res.status(401).json({ error: 'missing_customer_email' });
     if (!countryCode || !vatNumber) return res.status(400).json({ error: 'missing_vat_data' });
 
-    // Integration keys bypass Stripe entitlement (but still rate-limited + logged)
+    // Load key record
     const rec = await s3GetJson(`keys/by-key/${apiKey}.json`);
-    if (rec && rec.active === true && rec.issuer === 'integration') {
+    if (!rec || rec.active === false) return res.status(401).json({ error: 'invalid_api_key' });
+
+    // Special testers:
+    // - issuer === 'integration': allow usage, but enforce reviewer email if stored, and require issuer on rotation (handled in /reset)
+    // - issuer === 'customer' && test === true: treat like a customer-grade key (no Stripe gating), but lock to rec.email (defaults to ZAPIER_TEST_EMAIL)
+    if (rec.issuer === 'integration') {
       const email = rec.email || emailHeader;
+      if (rec.email && email.toLowerCase() !== rec.email.toLowerCase()) {
+        return res.status(403).json({ error: 'access_denied' });
+      }
       const meterRes = await meterAndCheck({ apiKey, email, countryCode, vatNumber });
       if (meterRes.remaining !== undefined) res.set('X-Rate-Remaining', String(meterRes.remaining));
       if (!meterRes.allowed) return res.status(429).json({ error: meterRes.reason || 'rate_limit_exceeded' });
@@ -311,7 +322,20 @@ async function vatHandler(req, res) {
       return res.status(200).json(result);
     }
 
-    // Normal flow: Entitlement via S3 + Stripe
+    if (rec.issuer === 'customer' && rec.test === true) {
+      // customer-mode test key — ONLY for the bound reviewer email
+      const allowedEmail = (rec.email || ZAPIER_TEST_EMAIL).toLowerCase();
+      if (emailHeader.toLowerCase() !== allowedEmail) {
+        return res.status(403).json({ error: 'access_denied' });
+      }
+      const meterRes = await meterAndCheck({ apiKey, email: emailHeader, countryCode, vatNumber });
+      if (meterRes.remaining !== undefined) res.set('X-Rate-Remaining', String(meterRes.remaining));
+      if (!meterRes.allowed) return res.status(429).json({ error: meterRes.reason || 'rate_limit_exceeded' });
+      const result = await checkVAT({ countryCode, vatNumber, email: emailHeader });
+      return res.status(200).json(result);
+    }
+
+    // Normal customers: Entitlement via S3 + Stripe
     try {
       await assertActivePlus({ apiKey, email: emailHeader });
     } catch (e) {
@@ -328,7 +352,6 @@ async function vatHandler(req, res) {
     if (meterRes.remaining !== undefined) res.set('X-Rate-Remaining', String(meterRes.remaining));
     if (!meterRes.allowed) return res.status(429).json({ error: meterRes.reason || 'rate_limit_exceeded' });
 
-    // VIES with S3 cache fallback
     const result = await checkVAT({ countryCode, vatNumber, email: emailHeader });
     return res.status(200).json(result);
   } catch (err) {
@@ -352,12 +375,20 @@ app.post('/reset', async (req, res) => {
     const rec = await s3GetJson(`keys/by-key/${apiKey}.json`);
     if (!rec || rec.active === false) return res.status(401).json({ error: 'invalid_api_key' });
 
-    // Integration key rotation: require issuer secret
+    // Enforce email match if present on record
+    if (rec.email && rec.email.toLowerCase() !== email.toLowerCase()) {
+      return res.status(403).json({ error: 'access_denied' });
+    }
+
+    // Rotation policy
     if (rec.issuer === 'integration') {
       const ok = TEST_ISSUER_SECRET && auth.toLowerCase() === `bearer ${TEST_ISSUER_SECRET}`.toLowerCase();
       if (!ok) return res.status(403).json({ error: 'access_denied' });
+    } else if (rec.issuer === 'customer' && rec.test === true) {
+      // customer-mode test key → allow rotation without issuer token
+      // (no Stripe entitlement check)
     } else {
-      // Normal customers: Stripe-gated
+      // Normal paying customers: Stripe-gated
       try {
         await assertActivePlus({ apiKey, email });
       } catch (e) {
@@ -368,16 +399,11 @@ app.post('/reset', async (req, res) => {
         if (code === 'price_not_allowed') return res.status(403).json({ error: 'plan_not_allowed' });
         return res.status(403).json({ error: 'access_denied' });
       }
-      // Optional: enforce email match if present
-      if (rec.email && String(rec.email).toLowerCase() !== String(email).toLowerCase()) {
-        return res.status(403).json({ error: 'access_denied' });
-      }
     }
 
     const now = new Date().toISOString();
     const newKey = 'sk_live_' + crypto.randomBytes(24).toString('hex');
 
-    // Write updated customer record
     const updated = { ...rec, key: newKey, active: true, rotatedAt: now, updatedAt: now };
     delete updated.deactivatedAt;
 
@@ -395,33 +421,42 @@ app.post('/reset', async (req, res) => {
   }
 });
 
-// ---------- TEST: Issue integration key (Zapier, etc.) ----------
+// ---------- TEST: Issue reviewer key (supports mode: "integration" | "customer") ----------
 app.post('/test/issue', async (req, res) => {
   try {
     const auth = String(req.header('authorization') || '');
     const ok = TEST_ISSUER_SECRET && auth.toLowerCase() === `bearer ${TEST_ISSUER_SECRET}`.toLowerCase();
     if (!ok) return res.status(403).json({ error: 'access_denied' });
 
+    const mode  = String(req.body?.mode || 'integration').toLowerCase(); // "integration" (default) | "customer"
     const email = String((req.body?.email || ZAPIER_TEST_EMAIL)).trim().toLowerCase();
-    const label = String(req.body?.label || 'Zapier Reviewer').trim();
-    const plan  = String(req.body?.plan || 'starter').trim(); // metadata only
+    const label = String(req.body?.label || (mode === 'customer' ? 'Zapier Reviewer (customer-mode)' : 'Zapier Reviewer')).trim();
+    const plan  = String(req.body?.plan  || 'starter').trim(); // metadata only
 
+    // IDs/keys
     const customerId = `test_${crypto.createHash('sha256').update(email + ':' + Date.now()).digest('hex').slice(0,24)}`;
     const apiKey = 'sk_live_' + crypto.randomBytes(24).toString('hex'); // live-like shape
     const now = new Date().toISOString();
 
-    const record = {
+    const recordBase = {
       customerId,
       email,
       key: apiKey,
       active: true,
       createdAt: now,
       updatedAt: now,
-      issuer: 'integration',
       label,
-      plan,
-      priceId: null,
+      plan,            // metadata
+      priceId: null,   // no Stripe price for test keys
       test: true,
+    };
+
+    // issuer determines gating behavior elsewhere:
+    // - "integration": needs issuer token to rotate; lookup allowed (email-locked if present)
+    // - "customer":    behaves like customer-grade (no Stripe gating), rotation allowed without issuer; email-locked
+    const record = {
+      ...recordBase,
+      issuer: mode === 'customer' ? 'customer' : 'integration',
     };
 
     await s3PutJson(`keys/${customerId}.json`, record);
@@ -433,7 +468,11 @@ app.post('/test/issue', async (req, res) => {
       customerId,
       email,
       apiKey,
-      note: 'Integration key issued; include x-customer-email in requests; use /reset with Bearer secret to rotate.',
+      mode: record.issuer,
+      note:
+        record.issuer === 'customer'
+          ? 'Customer-mode test key issued; include x-customer-email in requests; /reset works without Bearer token.'
+          : 'Integration-mode key issued; include x-customer-email in requests; /reset requires Bearer issuer token.',
     });
   } catch (e) {
     console.error('[test/issue]', e?.message || e);
@@ -489,7 +528,7 @@ app.get('/legal', (_req, res) => {
   <li><a href="https://www.iubenda.com/privacy-policy/41345819/cookie-policy" target="_blank">Cookie Policy</a></li>
   <li><a href="https://www.iubenda.com/terms-and-conditions/41345819" target="_blank">Terms & Conditions</a></li>
 </ul>
-<p>Contact: <a href="mailto:support@vatfix.eu">support@vatfix.eu</a></p>
+<p>Contact: <a href="mailto:${FOOTER_EMAIL}">${FOOTER_EMAIL}</a></p>
 ${renderFooter()}`);
 });
 app.get('/vat/legal', (_req, res) => res.redirect(301, '/legal'));
@@ -528,18 +567,18 @@ app.get('/vat/success', successHandler);
 
 // ---------- Docs & pages ----------
 app.get('/plus', (_req, res) => res.type('html').send(renderPlusPage()));
-app.get('/vat/plus', (_req, res) => res.type('html').send(renderPlusPage()));
+app.get('/vat/plus', (_req, res) => res.redirect(301, '/plus'));
 
 app.get('/pricing', (_req, res) => res.type('html').send(renderPricingPage()));
-app.get('/vat/pricing', (_req, res) => res.type('html').send(renderPricingPage()));
+app.get('/vat/pricing', (_req, res) => res.redirect(301, '/pricing'));
 
 app.get('/faq', (_req, res) => res.type('html').send(renderFAQPage()));
-app.get('/vat/faq', (_req, res) => res.type('html').send(renderFAQPage()));
+app.get('/vat/faq', (_req, res) => res.redirect(301, '/faq'));
 
 app.get('/homepage', (_req, res) => res.type('html').send(renderHomePage()));
-app.get('/home', (_req, res) => res.type('html').send(renderHomePage()));
-app.get('/plans', (_req, res) => res.type('html').send(renderHomePage()));
-app.get('/vat/homepage', (_req, res) => res.type('html').send(renderHomePage()));
+app.get('/home', (_req, res) => res.redirect(301, '/homepage'));
+app.get('/plans', (_req, res) => res.redirect(301, '/pricing'));
+app.get('/vat/homepage', (_req, res) => res.redirect(301, '/homepage'));
 
 // ---------- Status ----------
 app.get('/status', (_req, res) => {
@@ -583,7 +622,7 @@ app.get('/vat/legal/terms', (_req, res) => res.redirect(301, '/legal/terms'));
 
 // ---------- Health + misc ----------
 app.get('/', (_req, res) => res.type('html').send(renderHomePage()));
-app.get('/vat', (_req, res) => res.type('html').send(renderPlusPage()));
+app.get('/vat', (_req, res) => res.redirect(301, '/plus'));
 app.get('/cancel', (_req, res) => res.status(200).send('Checkout canceled.'));
 app.get('/vat/cancel', (_req, res) => res.redirect(301, '/cancel'));
 
