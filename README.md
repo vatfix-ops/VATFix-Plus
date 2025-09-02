@@ -50,16 +50,16 @@ curl -sS https://plus.vatfix.eu/vat/lookup \
 ## 🧩 Integrations
 
 ### Postman
-- [Run collection](https://god.gpt/postman-link)
+- [Run collection](https://www.postman.com/vatfixplus/vatfix-plus-eu-vat-validation-vies-fallback)
 - Environment file: `vatfix.environment.json`
 
 ### Zapier
 Featured templates:
-- [Validate new Stripe invoices with VATFix Plus](https://zapier.com/apps/vatfix-plus/integrations/stripe#featured)
-- [Validate new Stripe subscriptions with VATFix Plus](https://zapier.com/apps/vatfix-plus/integrations/stripe#subs)
-- [Validate new Stripe payments with VATFix Plus](https://zapier.com/apps/vatfix-plus/integrations/stripe#payments)
-- [Add new Stripe customers → validate VAT → Google Sheets](https://zapier.com/apps/vatfix-plus/integrations/google-sheets)
-- [Send Slack alerts for companies validated by VATFix](https://zapier.com/apps/vatfix-plus/integrations/slack)
+- [Log new PayPal payments with EU VAT numbers validated by VATFix into BigQuery](https://zapier.com/apps/google-bigquery/integrations/paypal/255665523/log-new-paypal-payments-with-eu-vat-numbers-validated-by-vatfix-into-bigquery)
+- [Validate new SurveyMonkey responses with VATFix and create ClickUp tasks](https://zapier.com/apps/clickup/integrations/surveymonkey/255665526/validate-new-surveymonkey-responses-with-vatfix-and-create-clickup-tasks)
+- [Create Notion database items from new Shopify customers validated by VATFix Plus](https://zapier.com/apps/notion/integrations/shopify/255665470/create-notion-database-items-from-new-shopify-customers-validated-by-vatfix-plus)
+- [Log new WooCommerce customers with validated VATFix numbers as Airtable records](https://zapier.com/apps/airtable/integrations/woocommerce/255665458/log-new-woocommerce-customers-with-validated-vatfix-numbers-as-airtable-records)
+- [Add VAT numbers validated by VATFix for new signed DocuSign agreements as SharePoint list items](https://zapier.com/apps/docusign/integrations/sharepoint/255665530/add-vat-numbers-validated-by-vatfix-for-new-signed-docusign-agreements-as-sharepoint-list-items)
 
 ### Product Hunt
 [![Follow on Product Hunt](https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=1098547&theme=light)](https://www.producthunt.com/products/vatfix-plus)
