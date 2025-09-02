@@ -1,7 +1,7 @@
 # 📟 VATFix Plus — EU VAT Validation (VIES Fallback)
 
 [![License](https://img.shields.io/github/license/vatfix-plus/vatfix-plus)](./LICENSE.txt)
-[![Postman](https://img.shields.io/badge/Open_in-Postman-orange?logo=postman)](https://god.gpt/postman-link)
+[![Postman](https://img.shields.io/badge/Open_in-Postman-orange?logo=postman)](https://www.postman.com/vatfixplus/vatfix-plus-eu-vat-validation-vies-fallback)
 [![Zapier](https://img.shields.io/badge/Zapier-Templates-blue?logo=zapier)](https://zapier.com/apps/vatfix-plus/integrations)
 [![Product Hunt](https://img.shields.io/badge/Product_Hunt-Follow-red?logo=producthunt)](https://www.producthunt.com/products/vatfix-plus)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
