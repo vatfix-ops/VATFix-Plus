@@ -1,165 +1,105 @@
 # 📟 VATFix Plus — EU VAT Validation (VIES Fallback)
 
-![Version](https://img.shields.io/badge/version-1.0.2-blue.svg) ![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg) ![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)
-
-[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/47801394-da418de9-75da-43f0-b156-12a84b9fd1b5?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D47801394-da418de9-75da-43f0-b156-12a84b9fd1b5%26entityType%3Dcollection%26workspaceId%3D624016be-ec36-4aa8-85ef-c690efa272bb#?env%5BVATFix%20Plus%20(Public%20Env)%5D=W3sia2V5IjoiYmFzZVVybCIsInZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiaHR0cHM6Ly9wbHVzLnZhdGZpeC5ldSIsInNlc3Npb25JbmRleCI6MH0seyJrZXkiOiJpc3N1ZXJTZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiIiwiY29tcGxldGVTZXNzaW9uVmFsdWUiOiIiLCJzZXNzaW9uSW5kZXgiOjF9LHsia2V5IjoiYXBpS2V5IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlLCJ0eXBlIjoiZGVmYXVsdCIsInNlc3Npb25WYWx1ZSI6IiIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiIiwic2Vzc2lvbkluZGV4IjoyfSx7ImtleSI6ImN1c3RvbWVyRW1haWwiLCJ2YWx1ZSI6ImludGVncmF0aW9uLXRlc3RpbmdAemFwaWVyLmNvbSIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiaW50ZWdyYXRpb24tdGVzdGluZ0B6YXBpZXIuY29tIiwiY29tcGxldGVTZXNzaW9uVmFsdWUiOiJpbnRlZ3JhdGlvbi10ZXN0aW5nQHphcGllci5jb20iLCJzZXNzaW9uSW5kZXgiOjN9LHsia2V5IjoiY291bnRyeUNvZGUiLCJ2YWx1ZSI6IkRFIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6ImRlZmF1bHQiLCJzZXNzaW9uVmFsdWUiOiJERSIsImNvbXBsZXRlU2Vzc2lvblZhbHVlIjoiREUiLCJzZXNzaW9uSW5kZXgiOjR9LHsia2V5IjoidmF0TnVtYmVyIiwidmFsdWUiOiIxMjM0NTY3ODkxMiIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0Iiwic2Vzc2lvblZhbHVlIjoiMTIzNDU2Nzg5MTIiLCJjb21wbGV0ZVNlc3Npb25WYWx1ZSI6IjEyMzQ1Njc4OTEyIiwic2Vzc2lvbkluZGV4Ijo1fV0=)
-
-A clean, zero‑noise VAT number verification API built for compliance‑first teams. Lightning fast. Built for engineers, CFOs, and automation addicts.
+[![License](https://img.shields.io/github/license/vatfix-plus/vatfix-plus)](./LICENSE.txt)
+[![Postman](https://img.shields.io/badge/Open_in-Postman-orange?logo=postman)](https://god.gpt/postman-link)
+[![Zapier](https://img.shields.io/badge/Zapier-Templates-blue?logo=zapier)](https://zapier.com/apps/vatfix-plus/integrations)
+[![Product Hunt](https://img.shields.io/badge/Product_Hunt-Follow-red?logo=producthunt)](https://www.producthunt.com/products/vatfix-plus)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 ---
 
-## ⚡ Quickstart
+## 🚀 Overview
 
-**Endpoint**
+**📟 VATFix Plus** is a fallback **EU VAT validation API** designed for reliability when VIES is down. Built for **Stripe-first** businesses, it ensures continuous EU VAT compliance with:
 
+- ✅ **99.9% uptime**
+- ✅ **12h caching**
+- ✅ **Stripe billing integration**
+- ✅ **Instant JSON responses**
+- ✅ **Audit logs in S3**
+- ✅ **Resettable API keys**
+
+---
+
+## 🔑 Quickstart
+
+### Endpoint
 ```
 POST https://plus.vatfix.eu/vat/lookup
 ```
 
-**Required Headers**
-
+### Required headers
 ```
-x-api-key: <your key>
-x-customer-email: <billing email>
-Content-Type: application/json
+x-api-key
+x-customer-email
 ```
 
-**Request Body**
-
-```json
-{
-  "countryCode": "DE",
-  "vatNumber": "12345678912"
-}
-```
-
-**Successful (live VIES) Response**
-
-```json
-{
-  "countryCode": "DE",
-  "vatNumber": "12345678912",
-  "valid": true,
-  "name": "ACME GmbH",
-  "address": "Berlin, Germany",
-  "requestDate": "2025-08-17T22:00:00Z",
-  "source": "vies",
-  "lookupId": "DE-12345678912-xyz123"
-}
-```
-
-**Successful (cached) Response**
-
-```json
-{
-  "countryCode": "IT",
-  "vatNumber": "12345678901",
-  "valid": true,
-  "name": "ACME S.p.A.",
-  "address": "Via Esempio 1, 20100 Milano, IT",
-  "requestDate": "2025-08-21T18:14:06Z",
-  "source": "cache",
-  "lookupId": "IT-12345678901-abc123",
-  "cacheTtlMs": 43200000
-}
-```
-
-**cURL**
-
+### Example request
 ```bash
 curl -sS https://plus.vatfix.eu/vat/lookup \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: YOUR_API_KEY" \
-  -H "x-customer-email: billing@example.com" \
-  -d '{"countryCode":"DE","vatNumber":"12345678912"}' | jq .
+ -H "Content-Type: application/json" \
+ -H "x-api-key: <your key>" \
+ -H "x-customer-email: <billing email>" \
+ -d '{"countryCode":"DE","vatNumber":"12345678901"}' | jq .
 ```
 
----
-
-## 💻 Client Examples
-
-### Node.js (fetch)
-
-```js
-const res = await fetch("https://plus.vatfix.eu/vat/lookup", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "x-api-key": process.env.VATFIX_KEY,
-    "x-customer-email": "billing@example.com"
-  },
-  body: JSON.stringify({ countryCode: "DE", vatNumber: "12345678912" })
-});
-console.log(await res.json());
-```
-
-### Python (requests)
-
-```python
-import requests
-
-url = "https://plus.vatfix.eu/vat/lookup"
-headers = {
-    "Content-Type": "application/json",
-    "x-api-key": "YOUR_API_KEY",
-    "x-customer-email": "billing@example.com"
-}
-data = {"countryCode": "DE", "vatNumber": "12345678912"}
-print(requests.post(url, headers=headers, json=data).json())
-```
+👉 [Get your API key](https://plus.vatfix.eu/buy)
 
 ---
 
-## 🧼 Errors
+## 🧩 Integrations
 
-| HTTP | Codes                                                          | When                                      |
-| ---: | -------------------------------------------------------------- | ----------------------------------------- |
-|  400 | `missing_vat_data`                                             | Body missing `countryCode` or `vatNumber` |
-|  401 | `invalid_api_key`, `missing_api_key`, `missing_customer_email` | Auth issues                               |
-|  403 | `access_denied`, `key_revoked`, `plan_not_allowed`             | Not entitled / wrong plan                 |
-|  429 | `rate_limit_exceeded`                                          | Per‑key rate limit exceeded               |
-|  500 | `server_error`                                                 | Unexpected error                          |
+### Postman
+- [Run collection](https://god.gpt/postman-link)
+- Environment file: `vatfix.environment.json`
 
-**Header:** `X-Rate-Remaining` is returned when available.
+### Zapier
+Featured templates:
+- [Validate new Stripe invoices with VATFix Plus](https://zapier.com/apps/vatfix-plus/integrations/stripe#featured)
+- [Validate new Stripe subscriptions with VATFix Plus](https://zapier.com/apps/vatfix-plus/integrations/stripe#subs)
+- [Validate new Stripe payments with VATFix Plus](https://zapier.com/apps/vatfix-plus/integrations/stripe#payments)
+- [Add new Stripe customers → validate VAT → Google Sheets](https://zapier.com/apps/vatfix-plus/integrations/google-sheets)
+- [Send Slack alerts for companies validated by VATFix](https://zapier.com/apps/vatfix-plus/integrations/slack)
 
----
-
-## 🔒 Rate Limits & Fair Use
-
-* Default **120 requests/min** per key.
-* Burst responsibly; contact support for higher RPS/SLA.
+### Product Hunt
+[![Follow on Product Hunt](https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=1098547&theme=light)](https://www.producthunt.com/products/vatfix-plus)
 
 ---
 
-## 📊 Reliability
+## 💳 Billing
+- Starter — €29/mo (10k requests)
+- Growth — €79/mo (50k requests)
+- Scale — €199/mo (250k requests)
 
-* Automatic fallback to **cached** entries during VIES downtime
-* S3 cache with TTL
-* Production SLA **99.9%**
-
-**Status probe:** `GET https://plus.vatfix.eu/status.json` → `{ "status": "ok", "region": "eu-north-1", "host": "fly" }`
-
----
-
-## 🧠 Notes & Best Practices
-
-* **Privacy:** Do **not** put real company PII in examples/logs. Use placeholders like “ACME GmbH”.
-* **Validation:** Send VAT numbers **without spaces or punctuation**.
-* **Idempotency:** Same VAT within TTL may return cached response (`source: "cache"`).
+👉 [Manage subscription](https://billing.stripe.com/p/login/14A14o2Kk69F6Ei2hQ5wI00)
 
 ---
 
-## 📮 Support
-
-* Email: **[support@vatfix.eu](mailto:support@vatfix.eu)**
-* Billing Portal: available on your success page or portal link in emails
+## 🛡️ Security
+- See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
+- Private reports enabled on GitHub.
+- Keys are stored in AWS S3, rotated via `/reset`.
 
 ---
 
-## 🔗 Links
+## 🤝 Contributing
+We welcome PRs and issues.
 
-* Homepage: [https://plus.vatfix.eu](https://plus.vatfix.eu)
-* Quickstart Docs: [https://plus.vatfix.eu/plus](https://plus.vatfix.eu/plus)
-* Pricing: [https://plus.vatfix.eu/pricing](https://plus.vatfix.eu/pricing)
-* FAQ: [https://plus.vatfix.eu/faq](https://plus.vatfix.eu/faq)
-* Terms & Privacy: [https://vatfix.eu/legal](https://vatfix.eu/legal)
+1. Fork this repo
+2. Copy `.env.example` → `.env`
+3. `npm install`
+4. `npm run dev`
+5. Run tests with `npm test`
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+---
+
+## 📜 License
+[MIT](./LICENSE.txt)
+
+---
+
+## 📬 Support
+- Docs: [plus.vatfix.eu/plus](https://plus.vatfix.eu/plus)
+- Email: [support@vatfix.eu](mailto:support@vatfix.eu)
