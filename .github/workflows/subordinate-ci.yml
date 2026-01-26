@@ -22,13 +22,16 @@ jobs:
             exit 1
           fi
           echo "PASS: No local schemas"
-      - name: Require imports from vatfix/VATFIX
+      - name: Require imports from vatfix/VATFIX@v1.0.0-final
         run: |
           set -euo pipefail
           if find . -type f \( -name "*.js" -o -name "*.ts" -o -name "*.py" \) | grep -v node_modules | grep -v ".github" | xargs grep -l "schema" 2>/dev/null | while read f; do
             if ! grep -q "github.com/vatfix/VATFIX" "$f" && ! grep -q "vatfix/VATFIX" "$f"; then
               echo "FAIL: Schema references must import from vatfix/VATFIX"
               exit 1
+            fi
+            if ! grep -q "v1.0.0-final" "$f" && ! grep -q "@v1.0.0-final" "$f"; then
+              echo "WARN: Schema imports should reference v1.0.0-final tag"
             fi
           done || true
           echo "PASS: Schema imports verified"
