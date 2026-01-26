@@ -1,3 +1,8 @@
+STATUS: SUBORDINATE
+AUTHORITY: SYS-004 (vatfix/VATFIX)
+
+---
+
 # 📟 VATFix Plus — EU VAT Validation (VIES Fallback)
 
 [![License](https://img.shields.io/github/license/vatfix-plus/vatfix-plus)](./LICENSE.txt)

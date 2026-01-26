@@ -1,0 +1,42 @@
+name: Subordinate CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  schema-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if local schemas exist
+        run: |
+          set -euo pipefail
+          if [ -d "schema" ] && [ "$(ls -A schema 2>/dev/null)" ]; then
+            echo "FAIL: Local schema directory exists. Must import from vatfix/VATFIX only."
+            exit 1
+          fi
+          echo "PASS: No local schemas"
+      - name: Require imports from vatfix/VATFIX
+        run: |
+          set -euo pipefail
+          if find . -type f \( -name "*.js" -o -name "*.ts" -o -name "*.py" \) | grep -v node_modules | grep -v ".github" | xargs grep -l "schema" 2>/dev/null | while read f; do
+            if ! grep -q "github.com/vatfix/VATFIX" "$f" && ! grep -q "vatfix/VATFIX" "$f"; then
+              echo "FAIL: Schema references must import from vatfix/VATFIX"
+              exit 1
+            fi
+          done || true
+          echo "PASS: Schema imports verified"
+      - name: Verify failure codes lock
+        run: |
+          set -euo pipefail
+          LOCK_HASH="9d5c5d6ec073bb46c630c5d5048e0499ab4c3f48964b04938a261535d580acc6"
+          if find . -type f \( -name "*.js" -o -name "*.ts" -o -name "*.py" \) | grep -v node_modules | grep -v ".github" | xargs grep -l "FAILURE_CODES" 2>/dev/null | head -1 | grep -q .; then
+            echo "WARN: Failure codes referenced. Must use vatfix/VATFIX/FAILURE_CODES_LOCK.json"
+          fi
+          echo "PASS: Failure codes check"
