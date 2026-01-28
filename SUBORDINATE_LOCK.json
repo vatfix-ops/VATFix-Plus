@@ -1,23 +1,9 @@
 {
   "role": "commercial-transport",
-  "authority": false,
+  "authoritative": false,
   "documentation": "restricted",
   "pricing": "external-only",
-  "forbidden_in_readme": [
-    "features",
-    "pricing",
-    "uptime claims",
-    "instant validation",
-    "checkout flow",
-    "starter plan",
-    "enterprise plan",
-    "validation api"
-  ],
-  "allowed_language": [
-    "transport service",
-    "infrastructure",
-    "payment handling",
-    "non-authoritative",
-    "technical signals only"
-  ]
+  "binding": "none",
+  "lock_date": "2026-01-28",
+  "notes": "This repository provides paid transport only. No authority, no validation, no compliance, no legal effect."
 }
