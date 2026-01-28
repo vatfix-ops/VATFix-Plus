@@ -1,9 +1,23 @@
 {
-  "authority": "SYS-004",
-  "authority_repository": "https://github.com/vatfix/VATFIX",
-  "authority_tag": "v1.0.0-final",
-  "subordinate_status": "LOCKED",
-  "schema_source": "vatfix/VATFIX@v1.0.0-final",
-  "failure_codes_source": "vatfix/VATFIX/FAILURE_CODES_LOCK.json",
-  "lock_date": "2026-01-26"
+  "role": "commercial-transport",
+  "authority": false,
+  "documentation": "restricted",
+  "pricing": "external-only",
+  "forbidden_in_readme": [
+    "features",
+    "pricing",
+    "uptime claims",
+    "instant validation",
+    "checkout flow",
+    "starter plan",
+    "enterprise plan",
+    "validation api"
+  ],
+  "allowed_language": [
+    "transport service",
+    "infrastructure",
+    "payment handling",
+    "non-authoritative",
+    "technical signals only"
+  ]
 }

@@ -1,35 +1,44 @@
 # VATFix Plus
 
-Commercial EU VAT validation API with VIES fallback.
-
-✔ Stripe-secured access  
-✔ 99.9% uptime  
-✔ Instant validation  
-✔ Built for checkout flows  
+MIT License. No assurance, no authority, no compliance guarantee.
 
 ---
 
-## Pricing
+## Scope
 
-Starter — €29 / month  
-Growth — €79 / month  
-Scale — €199 / month  
+VATFix Plus is a **commercial transport service** for VAT format checks.
 
-👉 Get access: https://plus.vatfix.eu/buy
+It provides infrastructure, availability, and payment handling only.
 
----
-
-## Quick Test
-
-```bash
-curl https://plus.vatfix.eu/vat/lookup \
-  -H "x-api-key: YOUR_KEY" \
-  -d '{"countryCode":"DE","vatNumber":"123456789"}'
-```
+It is **not authoritative**.
+It does **not** provide legal, regulatory, or compliance determinations.
 
 ---
 
-## Legal
+## What This Is
 
-This service does not emit legal authority.
-It consumes VATFIX decision artifacts where applicable.
+- Paid transport layer
+- Availability and routing
+- Stripe-secured access
+
+---
+
+## What This Is Not
+
+- Not a tax authority
+- Not a compliance engine
+- Not a certification service
+- Not legal advice
+- Not audit evidence
+
+---
+
+## Responsibility Boundary
+
+All outputs are technical signals only.
+
+Use in environments where VAT determination, compliance, or legal exposure matters requires an accountable human or institution outside this system.
+
+See:
+- RESPONSIBILITY_BOUNDARY.md
+- LICENSE
