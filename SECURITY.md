@@ -64,7 +64,7 @@ We support responsible research and coordinated disclosure. If you follow the ru
 * **Stripe** platform, billing portal, and Checkout pages.
 * **AWS** infrastructure and the S3 service itself.
 * **Zapier**, **Postman**, **Product Hunt**, or any third‑party marketplaces.
-* EU **VIES** service uptime/behavior.
+* EU **VIES** service availability/behavior (no uptime guarantees).
 * Denial‑of‑service, volumetric issues, and best‑practice advisories without a concrete exploit.
 
 If you’re unsure whether a target is in scope, email us first.

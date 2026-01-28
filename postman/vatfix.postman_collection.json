@@ -3,7 +3,7 @@
     "_postman_id": "1f6f7a2b-0c2e-41ef-9b2c-f7f5a2b9d001",
     "name": "VATFix Plus — Public API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "EU VAT validation API (VIES with cache). Most users only need the **Customer API** folder.\n\n**Base URL**: {{baseUrl}}\n\n**Headers**\n• VAT API (`POST /vat/lookup`) → `x-api-key` + `x-customer-email`\n• Customer key rotation (`POST /reset`) → `x-api-key` + `x-customer-email` (no bearer required)\n\n**Common errors**\n`missing_api_key`, `missing_customer_email`, `invalid_api_key`, `rate_limit_exceeded`, `access_denied`, `plan_not_allowed`.\n\n**Rate limit**: 120 requests/min per key.\n\nTip: run the requests top-to-bottom; tests will save new keys automatically to your environment."
+    "description": "EU VAT format check transport (VIES with cache). Most users only need the **Customer API** folder.\n\n**Base URL**: {{baseUrl}}\n\n**Headers**\n• VAT transport (`POST /vat/lookup`) → `x-api-key` + `x-customer-email`\n• Customer key rotation (`POST /reset`) → `x-api-key` + `x-customer-email` (no bearer required)\n\n**Common errors**\n`missing_api_key`, `missing_customer_email`, `invalid_api_key`, `rate_limit_exceeded`, `access_denied`, `plan_not_allowed`.\n\n**Rate limit**: 120 requests/min per key.\n\nTip: run the requests top-to-bottom; tests will save new keys automatically to your environment.\n\n**Non-authoritative:** Technical format checks only. Not validation. Not compliance. Not legal determination."
   },
   "event": [
     {
@@ -152,7 +152,7 @@
               { "key": "x-customer-email", "value": "{{customerEmail}}", "type": "text" }
             ],
             "url": { "raw": "{{baseUrl}}/reset", "host": ["{{baseUrl}}"], "path": ["reset"] },
-            "description": "Rotate your customer key instantly; old key is revoked. **No Bearer** header needed."
+            "description": "Rotate your customer key; old key is revoked. **No Bearer** header needed."
           },
           "response": [],
           "event": [
